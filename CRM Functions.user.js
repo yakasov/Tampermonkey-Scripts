@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CRM Functions
-// @version      1.3
+// @version      1.4
 // @description  Helpful functions for ProspectSoft CRM
 // @author       Yakasov
 // @updateURL    https://raw.githubusercontent.com/yakasov/Tampermonkey-Scripts/main/CRM%20Functions.user.js
@@ -30,6 +30,7 @@ const functions = {
     "Run GET request": runGetRequest,
     "Run OData request": runODataRequest,
     "Use local OData": useLocalOData,
+    "Force OData rebuild": forceODataRebuild,
     "Change UI colour": changeColour,
 };
 
@@ -91,6 +92,20 @@ function useLocalOData() {
             window.$$staging = localhostUrl;
         };
         return open.apply(this, args);
+    };
+};
+
+async function forceODataRebuild() {
+    const dbUpdated = confirm("Have you forced a rebuild of the OData DLL in the database?");
+    if (dbUpdated) {
+        while(true) {
+            const res = await new Api.Query({pluralName: "Info", fields: {}});
+            console.log(res.State);
+            if(res.State !== "building") {
+                break;
+            };
+            await new Promise(r => setTimeout(r, 1000));
+        };
     };
 };
 
