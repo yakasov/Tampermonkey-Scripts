@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CRM Functions
-// @version      1.4
+// @version      1.4.1
 // @description  Helpful functions for ProspectSoft CRM
 // @author       Yakasov
 // @updateURL    https://raw.githubusercontent.com/yakasov/Tampermonkey-Scripts/main/CRM%20Functions.user.js
@@ -38,7 +38,7 @@ waitForKeyElements(".platform-app", changeProspectTitle);
 
 function changeProspectTitle() {
     let prospectTitle = document.getElementsByClassName("platform-app")[0];
-    const entityHtml = '<a href"/"> _useODataLite = ' + Api.Query._useODataLite + '<br> usingLocalOData = ' + usingLocalOData + ' </a>';
+    const entityHtml = '<a href="/"> _useODataLite = ' + Api.Query._useODataLite + '<br> usingLocalOData = ' + usingLocalOData + ' </a>';
     prospectTitle.innerHTML = entityHtml;
 };
 
