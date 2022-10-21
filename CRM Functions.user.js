@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CRM Functions
-// @version      1.2
+// @version      1.3
 // @description  Helpful functions for ProspectSoft CRM
 // @author       Yakasov
 // @updateURL    https://raw.githubusercontent.com/yakasov/Tampermonkey-Scripts/main/CRM%20Functions.user.js
@@ -9,7 +9,19 @@
 // @match        https://crm.prospect365-dev.com/
 // @match        https://crm.prospect365-qa.com/
 // @grant        GM_registerMenuCommand
+// @require      https://gist.githubusercontent.com/BrockA/2625891/raw/9c97aa67ff9c5d56be34a55ad6c18a314e5eb548/waitForKeyElements.js
 // ==/UserScript==
+
+const environments = {
+    "Live": "",
+    "Development": "-dev",
+    "QA": "-qa",
+};
+
+const currentEnvironment = environments[environment._deploymentEnvironment];
+const apiUrl = "https://api-v1.prospect365" + currentEnvironment + ".com/";
+const apiLiteUrl = "https://api-lite-v1.prospect365" + currentEnvironment + ".com/";
+let usingLocalOData = false;
 
 const functions = {
     "Clear local storage": clearLocalStorage,
@@ -17,7 +29,16 @@ const functions = {
     "Toggle OData Lite": toggleODataLite,
     "Run GET request": runGetRequest,
     "Run OData request": runODataRequest,
+    "Use local OData": useLocalOData,
     "Change UI colour": changeColour,
+};
+
+waitForKeyElements(".platform-app", changeProspectTitle);
+
+function changeProspectTitle() {
+    let prospectTitle = document.getElementsByClassName("platform-app")[0];
+    const entityHtml = '<a href"/"> _useODataLite = ' + Api.Query._useODataLite + '<br> usingLocalOData = ' + usingLocalOData + ' </a>';
+    prospectTitle.innerHTML = entityHtml;
 };
 
 function clearLocalStorage() {
@@ -30,10 +51,11 @@ function copyToken() {
 
 function toggleODataLite() {
     Api.Query._useODataLite = !Api.Query._useODataLite;
+    changeProspectTitle();
 };
 
 function runGetRequest() {
-    const url = prompt("Enter URL to send GET request to:", "https://api-v1.prospect365-dev.com/Users");
+    const url = prompt("Enter URL to send GET request to:", apiUrl + "Users");
     $.ajax({
         method: "GET",
         url: url,
@@ -56,6 +78,22 @@ async function copyJsonUrlToClipboard(response) {
     alert("URL copied to clipboard!");
 };
 
+function useLocalOData() {
+    usingLocalOData = !usingLocalOData;
+    changeProspectTitle();
+    const localhostUrl = prompt("Enter localhost URL:", "https://localhost:12345/");
+    const open = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function() {
+        const args = [...arguments];
+        const usedUrl = args[1].startsWith(apiUrl) ? apiUrl : args[1].startsWith(apiLiteUrl) ? apiLiteUrl : null;
+        if (usedUrl) {
+            args[1] = localhostUrl + args[1].substr(usedUrl.length);
+            window.$$staging = localhostUrl;
+        };
+        return open.apply(this, args);
+    };
+};
+
 function changeColour() {
     __test();
 };
@@ -63,4 +101,3 @@ function changeColour() {
 for (const [key, val] of Object.entries(functions)) {
     GM_registerMenuCommand(key, val);
 };
-
