@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         CRM Functions
-// @version      1.4.1
+// @version      1.4.2
 // @description  Helpful functions for ProspectSoft CRM
 // @author       Yakasov
 // @updateURL    https://raw.githubusercontent.com/yakasov/Tampermonkey-Scripts/main/CRM%20Functions.user.js
 // @downloadURL  https://raw.githubusercontent.com/yakasov/Tampermonkey-Scripts/main/CRM%20Functions.user.js
 // @match        https://crm.prospect365.com/
 // @match        https://crm.prospect365-dev.com/
+// @match        https://crm.prospect365-qa.com/
 // @match        https://crm.prospect365-qa.com/
 // @grant        GM_registerMenuCommand
 // @require      https://gist.githubusercontent.com/BrockA/2625891/raw/9c97aa67ff9c5d56be34a55ad6c18a314e5eb548/waitForKeyElements.js
