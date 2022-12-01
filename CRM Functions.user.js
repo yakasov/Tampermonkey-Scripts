@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CRM Functions
-// @version      1.5.0
+// @version      1.5.1
 // @description  Helpful functions for ProspectSoft CRM
 // @author       Yakasov
 // @updateURL    https://raw.githubusercontent.com/yakasov/Tampermonkey-Scripts/main/CRM%20Functions.user.js
@@ -20,9 +20,10 @@ const environments = {
 };
 
 const currentEnvironment = environments[environment._deploymentEnvironment];
-const apiUrl = "https://api-v1.prospect365" + currentEnvironment + ".com/";
+const apiUrl =
+  "https://api-v1-northeurope.prospect365" + currentEnvironment + ".com/";
 const apiLiteUrl =
-  "https://api-lite-v1.prospect365" + currentEnvironment + ".com/";
+  "https://api-lite-v1-northeurope.prospect365" + currentEnvironment + ".com/";
 let usingLocalOData = false;
 
 const functions = {
@@ -68,7 +69,7 @@ function toggleODataLite() {
 }
 
 function forceODataLite() {
-  const urlStart = "https://api-v1-lite";
+  const urlStart = "https://api-lite-v1";
   const open = XMLHttpRequest.prototype.open;
   XMLHttpRequest.prototype.open = function () {
     let args = [...arguments];
